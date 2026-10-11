@@ -1,0 +1,36 @@
+# Incident priority (Phase 6). Separate from severity:
+#   severity = how badly the network is behaving (severity.yaml)
+#   priority = severity + how much it matters right now (impact and risk)
+#
+#   priority_score = severity_score
+#                  + users_max_points * min(1, user_count / users_reference)
+#                  + issue_reported_points                (customer-visible)
+#                  + availability_points                  (low_availability active)
+#                  + critical_alarm_points                (high_critical_alarm_count active)
+#                  + fault_risk_points[predicted risk level]   (only when a prediction exists)
+#
+# For stored historical records no fault-risk prediction exists, so that term
+# is 0. During analysis the Risk Agent's prediction is added.
+#
+# No response-time SLA is defined, so the system never claims a response
+# time ("within 1 hour" etc.). Add an `sla` mapping here to enable that.
+
+users_reference: 9902        # user_count P99 in the dataset
+users_max_points: 15
+issue_reported_points: 10
+availability_points: 10
+critical_alarm_points: 5
+fault_risk_points: {Low: 0, Medium: 3, High: 8, Critical: 15}
+
+levels:
+  - {name: P1, label: Critical, min_score: 75}
+  - {name: P2, label: High, min_score: 50}
+  - {name: P3, label: Medium, min_score: 28}
+  - {name: P4, label: Low, min_score: 0}
+
+floors:
+  # severity CRITICAL is never below P2, HIGH never below P3
+  CRITICAL: P2
+  HIGH: P3
+
+sla: null

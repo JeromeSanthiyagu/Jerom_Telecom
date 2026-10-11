@@ -1,0 +1,304 @@
+{
+  "summary": {
+    "condition_recall": 1.0,
+    "retrieval_precision": 1.0,
+    "average_precision": 1.0,
+    "category_match": 1.0,
+    "hypothesis_hit": 1.0,
+    "grounded": 0.875,
+    "deepeval": {
+      "AnswerRelevancyMetric": 0.791,
+      "ContextualPrecisionMetric": 1.0,
+      "ContextualRelevancyMetric": 0.252,
+      "FaithfulnessMetric": 0.642
+    }
+  },
+  "cases": [
+    {
+      "id": "latency_packet_loss",
+      "query": "Cell has high latency and high packet loss. What similar network conditions occurred before?",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": false,
+      "category": "Service Degradation",
+      "top_hypotheses": [
+        "transport_connectivity",
+        "weather_related",
+        "capacity_congestion"
+      ],
+      "narrative_source": "llm",
+      "seconds": 67.3,
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 0.938,
+          "reason": "The score is 0.94 because the answer correctly identifies the current high latency and packet loss but only restates the present condition without providing any examples of past similar network conditions, which limits its relevance to the question."
+        },
+        "FaithfulnessMetric": {
+          "score": 0.786,
+          "reason": "The score is 0.79 because the actual output incorrectly claims a 13% packet loss for all five records, while the retrieved data shows losses of 14.00%, 14.49%, 12.43%, 12.23%, and 12.95%, none of which match 13%. Additionally, the output states all records share the same weather (Rain) and season (Summer), but one record (ROW\u2011061293) was recorded in Fall, contradicting that claim."
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.393,
+          "reason": "The score is 0.39 because the retrieval context contains several statements that directly mention high latency and high packet loss, such as 'Derived conditions: low cell availability (low_availability), high latency (high_latency), high packet loss (high_packet_loss)' and 'Network metrics: latency 144.61 ms; packet loss 14.49%'. However, many other parts of the context are irrelevant, as highlighted in the irrelevancy list, which dilutes the overall relevance."
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all relevant nodes (nodes 1 through 5) are ranked above any irrelevant nodes, as indicated by the quoted reasons that each node explicitly mentions \"high latency (high_latency), high packet loss (high_packet_loss).\""
+        }
+      }
+    },
+    {
+      "id": "signal_call_drops",
+      "query": "Poor signal strength and frequent call drops on a cell.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Radio / Signal Quality",
+      "top_hypotheses": [
+        "radio_quality",
+        "weather_related"
+      ],
+      "narrative_source": "template",
+      "seconds": 79.2,
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 0.0,
+          "reason": "error: Evaluation LLM outputted an invalid JSON. Please use a better evaluation model."
+        },
+        "FaithfulnessMetric": {
+          "score": 0.75,
+          "reason": "The score is 0.75 because the actual output claims a case severity of MEDIUM and priority P4, which directly contradicts the retrieval context that indicates a derived severity of CRITICAL or HIGH and a derived priority of P2."
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.237,
+          "reason": "The score is 0.24 because the retrieval context contains many statements that do not mention signal strength or call drops, such as \"The statement only indicates severity and priority, not the signal or call drop details.\" and \"The statement \"Location: South Douglasport, MO (Missouri). Season: Spring. Weather: Rain.\" contains no information about signal strength or call drops.\" However, it also includes relevant data like \"Derived conditions: low cell availability, high call drop rate, weak signal strength.\" and \"Network metrics: cell availability 76.41%; throughput 453.10 Mbps; latency 85.99 ms; packet loss 4.12%; call drop rate 4.44%; handover success 97.10%; signal strength -118.13 dBm; jitter 7.10 ms; connection setup success 93.47%\", which directly address the input. The mix of irrelevant and relevant statements results in a low contextual relevancy score."
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all nodes (rank 1 through 5) contain the exact phrases \"weak signal strength\" and \"high call drop rate\", which match the input\u2019s focus on poor signal and frequent call drops. Since there are no irrelevant nodes to rank lower, the contextual precision reaches its maximum."
+        }
+      }
+    },
+    {
+      "id": "load_throughput",
+      "query": "High user load with reduced throughput on the cell.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Congestion / Load",
+      "top_hypotheses": [
+        "capacity_congestion",
+        "weather_related",
+        "transport_connectivity"
+      ],
+      "narrative_source": "llm",
+      "seconds": 19.8,
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 0.789,
+          "reason": "The score is 0.79 because the answer includes several irrelevant statements\u2014such as historical fault rates, risk band information, fault rate distribution, and transport metrics\u2014that do not address the specific issue of high user load with reduced throughput on the cell."
+        },
+        "FaithfulnessMetric": {
+          "score": 0.0,
+          "reason": "error: Evaluation LLM outputted an invalid JSON. Please use a better evaluation model."
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.377,
+          "reason": "The score is 0.38 because the retrieval context contains many irrelevant statements (e.g., weather, security incidents, location details) that do not address high user load or throughput, while only a few statements are relevant, such as \"Derived conditions: low throughput (low_throughput), high user load (high_load)\" and \"High user load with reduced throughput on the cell.\""
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all nodes in the retrieval contexts (nodes 1 through 5) are relevant, each containing the exact phrases \"high user load\" and \"low throughput\" and correctly categorizing the issue as Congestion / Load or Service Degradation with Congestion / Load. Since every node is relevant, there are no irrelevant nodes to rank lower, resulting in perfect contextual precision."
+        }
+      }
+    },
+    {
+      "id": "low_handover",
+      "query": "Handover success rate is low on several cells.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Mobility / Handover",
+      "top_hypotheses": [
+        "mobility_configuration",
+        "load_mobility",
+        "radio_quality"
+      ],
+      "narrative_source": "llm",
+      "seconds": 18.0,
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because the response directly addresses the issue of low handover success rate on several cells without including any irrelevant statements."
+        },
+        "FaithfulnessMetric": {
+          "score": 0.8,
+          "reason": "The score is 0.80 because the claim that there are five high\u2011severity records is contradicted by the retrieval context, which shows only four records with HIGH severity and one with MEDIUM severity."
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.206,
+          "reason": "The score is 0.21 because the retrieval context contains many unrelated metrics and statements (e.g., weather, security incidents, load data) that do not address the handover success issue, while only a few lines directly mention \"Handover success rate is low on several cells\" and related derived conditions, which are insufficient to justify a higher relevance."
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all nodes (first through fifth) are relevant, and there are no irrelevant nodes to rank lower. Each node\u2019s reason explicitly mentions \"low handover success (low_handover)\" and the Mobility / Handover category, confirming perfect contextual precision."
+        }
+      }
+    },
+    {
+      "id": "alarms",
+      "query": "High alarm count and many critical alarms at a site.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Fault / Alarm",
+      "top_hypotheses": [
+        "equipment_fault",
+        "availability_outage"
+      ],
+      "narrative_source": "llm",
+      "seconds": 9.2,
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because the response fully addressed the issue of high alarm count and critical alarms at a site without including any irrelevant statements."
+        },
+        "FaithfulnessMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context."
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.247,
+          "reason": "The score is 0.25 because the retrieval context contains many irrelevant statements such as \"elevated security incidents\" and \"network metrics\" that do not address alarm counts, while only a few lines like \"high alarm count (high_alarm_count)\" and \"high critical alarm count (high_critical_alarm_count)\" are actually relevant."
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all nodes in the retrieval contexts are relevant, and there are no irrelevant nodes to be ranked lower. Each node (first through fifth) contains the exact phrases \"high alarm count (high_alarm_count), high critical alarm count (high_critical_alarm_count)\" and a fault category, matching the input perfectly."
+        }
+      }
+    },
+    {
+      "id": "authentication",
+      "query": "Many authentication failures reported on the network.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Security",
+      "top_hypotheses": [
+        "security_authentication",
+        "weather_related",
+        "access_procedure"
+      ],
+      "narrative_source": "llm",
+      "seconds": 20.2,
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because the response directly addresses the issue of authentication failures on the network without including any irrelevant statements."
+        },
+        "FaithfulnessMetric": {
+          "score": 0.0,
+          "reason": "error: Evaluation LLM outputted an invalid JSON. Please use a better evaluation model."
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.137,
+          "reason": "The score is 0.14 because, while the retrieval context contains statements like 'Derived conditions: high authentication failures (authentication_failure)' and 'Security: security incidents 15; authentication failures 45', the overwhelming majority of the context is irrelevant, as shown by the numerous statements that explicitly state they do not mention authentication failures. This mismatch results in a low relevancy score."
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all relevant nodes (nodes 1 through 5) are ranked above any irrelevant nodes, as indicated by the quoted reasons in each node. Since there are no irrelevant nodes interleaved with the relevant ones, the contextual precision reaches its maximum."
+        }
+      }
+    },
+    {
+      "id": "setup_success",
+      "query": "Low connection setup success for users trying to connect.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Access / Connection Setup",
+      "top_hypotheses": [
+        "access_procedure",
+        "radio_quality"
+      ],
+      "narrative_source": "llm",
+      "seconds": 26.8,
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 0.6,
+          "reason": "The score is 0.60 because the response includes several statements about throughput, handover success, historical fault rates, ML predictions, and radio\u2011quality degradation that are not directly relevant to diagnosing or addressing low connection\u2011setup success. These unrelated points reduce the overall relevance, preventing a higher score."
+        },
+        "FaithfulnessMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because there are no contradictions to indicate any misalignment between the actual output and the retrieval context."
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.206,
+          "reason": "The score is 0.21 because the retrieval context contains many unrelated details such as 'Network record ROW-005655', weather, and load statistics, while only a few statements like 'Low connection setup success for users trying to connect.' and 'Derived conditions: low connection setup success (low_setup_success).' are actually relevant."
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all relevant nodes (nodes 1 through 5) are ranked above any irrelevant nodes, as indicated by the quoted reasons in each node\u2019s \u2018reason\u2019 field. Since every node in the retrieval contexts is relevant, the contextual precision reaches its maximum."
+        }
+      }
+    },
+    {
+      "id": "fault_rate",
+      "query": "High fault occurrence rate in a network region.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Fault / Alarm",
+      "top_hypotheses": [
+        "weather_related",
+        "equipment_fault"
+      ],
+      "narrative_source": "llm",
+      "seconds": 13.5,
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because the response fully addresses the issue of a high fault occurrence rate in a network region without any irrelevant statements."
+        },
+        "FaithfulnessMetric": {
+          "score": 0.8,
+          "reason": "The score is 0.80 because the actual output claims a fault rate of 47.89%, which contradicts the retrieval context that lists historical fault rates of 60.86%, 56.14%, 58.17%, 56.86%, and 59.97%\u2014none of which match the claimed figure."
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.209,
+          "reason": "The score is 0.21 because the retrieval context contains only a few statements that mention fault occurrence rate, such as 'Derived conditions: high fault occurrence rate' and 'Historical fault occurrence rate: 60.86%'. The majority of the context lists unrelated data, so the overall relevance is low."
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all relevant nodes (nodes 1 through 5) are ranked above any irrelevant nodes, as each node\u2019s reason explicitly states that it contains \"high fault occurrence rate\" and mentions rain weather or alarm counts, directly matching the expected explanation. Since there are no irrelevant nodes interleaved among the top-ranked nodes, the contextual precision reaches its maximum."
+        }
+      }
+    }
+  ],
+  "use_llm": true,
+  "deepeval": true
+}

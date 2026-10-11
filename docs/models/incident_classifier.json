@@ -1,0 +1,267 @@
+{
+  "target": "primary_category",
+  "label_source": "Rule-derived categories (app/config/taxonomy.yaml) - NOT ground truth. Scores measure agreement between the ML model and the rules.",
+  "features": [
+    "latency_ms",
+    "packet_loss_pct",
+    "jitter_ms",
+    "signal_strength_dbm",
+    "handover_success_pct",
+    "cell_availability_pct",
+    "setup_success_pct",
+    "user_count",
+    "data_usage_gb",
+    "throughput_mbps",
+    "alarm_count",
+    "critical_alarm_count",
+    "config_success_pct",
+    "parameter_changes",
+    "security_incidents",
+    "auth_failures",
+    "fault_rate_pct"
+  ],
+  "class_distribution_test": {
+    "Normal": 4000,
+    "Service Degradation": 3624,
+    "Congestion / Load": 2202,
+    "Radio / Signal Quality": 2045,
+    "Availability": 1657,
+    "Fault / Alarm": 1527,
+    "Mobility / Handover": 1501,
+    "Configuration": 1226,
+    "Security": 1114,
+    "Access / Connection Setup": 1104
+  },
+  "models": {
+    "logistic_regression": {
+      "accuracy": 0.651,
+      "macro_precision": 0.6515,
+      "macro_recall": 0.6569,
+      "macro_f1": 0.6514
+    },
+    "random_forest": {
+      "accuracy": 0.9722,
+      "macro_precision": 0.9751,
+      "macro_recall": 0.9779,
+      "macro_f1": 0.9761
+    },
+    "hist_gradient_boosting": {
+      "accuracy": 0.9737,
+      "macro_precision": 0.9741,
+      "macro_recall": 0.978,
+      "macro_f1": 0.9759
+    }
+  },
+  "served": "hist_gradient_boosting",
+  "confusion_matrix": {
+    "labels": [
+      "Access / Connection Setup",
+      "Availability",
+      "Configuration",
+      "Congestion / Load",
+      "Fault / Alarm",
+      "Mobility / Handover",
+      "Normal",
+      "Radio / Signal Quality",
+      "Security",
+      "Service Degradation"
+    ],
+    "matrix": [
+      [
+        1079,
+        2,
+        4,
+        0,
+        4,
+        0,
+        3,
+        3,
+        2,
+        7
+      ],
+      [
+        1,
+        1629,
+        2,
+        8,
+        4,
+        4,
+        3,
+        1,
+        2,
+        3
+      ],
+      [
+        0,
+        0,
+        1220,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3
+      ],
+      [
+        4,
+        1,
+        2,
+        2152,
+        2,
+        5,
+        6,
+        10,
+        4,
+        16
+      ],
+      [
+        2,
+        2,
+        1,
+        2,
+        1504,
+        1,
+        1,
+        0,
+        0,
+        14
+      ],
+      [
+        4,
+        8,
+        1,
+        10,
+        2,
+        1468,
+        2,
+        2,
+        3,
+        1
+      ],
+      [
+        8,
+        7,
+        0,
+        12,
+        2,
+        1,
+        3948,
+        4,
+        0,
+        18
+      ],
+      [
+        7,
+        2,
+        0,
+        8,
+        1,
+        1,
+        9,
+        2009,
+        2,
+        6
+      ],
+      [
+        3,
+        1,
+        0,
+        1,
+        3,
+        0,
+        0,
+        1,
+        1098,
+        7
+      ],
+      [
+        24,
+        26,
+        4,
+        51,
+        25,
+        1,
+        85,
+        36,
+        6,
+        3366
+      ]
+    ]
+  },
+  "per_class": {
+    "Access / Connection Setup": {
+      "precision": 0.9531802120141343,
+      "recall": 0.9773550724637681,
+      "f1-score": 0.9651162790697675,
+      "support": 1104.0
+    },
+    "Availability": {
+      "precision": 0.9707985697258641,
+      "recall": 0.9831019915509958,
+      "f1-score": 0.9769115442278861,
+      "support": 1657.0
+    },
+    "Configuration": {
+      "precision": 0.9886547811993517,
+      "recall": 0.9951060358890701,
+      "f1-score": 0.991869918699187,
+      "support": 1226.0
+    },
+    "Congestion / Load": {
+      "precision": 0.9577214063195372,
+      "recall": 0.9772933696639419,
+      "f1-score": 0.9674084063834569,
+      "support": 2202.0
+    },
+    "Fault / Alarm": {
+      "precision": 0.9722042663219134,
+      "recall": 0.9849377865094957,
+      "f1-score": 0.9785296031229668,
+      "support": 1527.0
+    },
+    "Mobility / Handover": {
+      "precision": 0.9912221471978393,
+      "recall": 0.978014656895403,
+      "f1-score": 0.9845741113346748,
+      "support": 1501.0
+    },
+    "Normal": {
+      "precision": 0.973132856790732,
+      "recall": 0.987,
+      "f1-score": 0.9800173761946134,
+      "support": 4000.0
+    },
+    "Radio / Signal Quality": {
+      "precision": 0.9724104549854792,
+      "recall": 0.9823960880195599,
+      "f1-score": 0.9773777669666748,
+      "support": 2045.0
+    },
+    "Security": {
+      "precision": 0.9829901521933752,
+      "recall": 0.9856373429084381,
+      "f1-score": 0.9843119677274764,
+      "support": 1114.0
+    },
+    "Service Degradation": {
+      "precision": 0.978204010462075,
+      "recall": 0.9288079470198676,
+      "f1-score": 0.9528662420382166,
+      "support": 3624.0
+    },
+    "accuracy": 0.97365,
+    "macro avg": {
+      "precision": 0.9740518857210303,
+      "recall": 0.977965029092054,
+      "f1-score": 0.9758983215764921,
+      "support": 20000.0
+    },
+    "weighted avg": {
+      "precision": 0.9737735505624557,
+      "recall": 0.97365,
+      "f1-score": 0.9735537454281264,
+      "support": 20000.0
+    }
+  }
+}

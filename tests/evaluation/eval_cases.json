@@ -1,0 +1,69 @@
+{
+  "description": "Manually created evaluation cases (Phase 25). Expected conditions, categories and hypotheses follow the documented rules in app/config/*.yaml; they are checked against the ACTUAL retrieved dataset records, never against invented answers. expected_output is a short reference written by hand for DeepEval's contextual-precision metric.",
+  "cases": [
+    {
+      "id": "latency_packet_loss",
+      "query": "Cell has high latency and high packet loss. What similar network conditions occurred before?",
+      "expected_conditions": ["high_latency", "high_packet_loss"],
+      "expected_category": "Service Degradation",
+      "expected_hypotheses": ["transport_connectivity"],
+      "expected_output": "Similar historical records show high latency and high packet loss. A transport or inter-cell connectivity degradation is a plausible hypothesis; check transport latency and loss and monitor latency and packet loss after remediation."
+    },
+    {
+      "id": "signal_call_drops",
+      "query": "Poor signal strength and frequent call drops on a cell.",
+      "expected_conditions": ["weak_signal", "high_call_drop"],
+      "expected_category": "Radio / Signal Quality",
+      "expected_hypotheses": ["radio_quality"],
+      "expected_output": "Similar records show weak signal strength with high call drop rates. Radio coverage or signal-quality degradation is the leading hypothesis; investigate coverage and interference and monitor call drops."
+    },
+    {
+      "id": "load_throughput",
+      "query": "High user load with reduced throughput on the cell.",
+      "expected_conditions": ["high_load", "low_throughput"],
+      "expected_category": "Congestion / Load",
+      "expected_hypotheses": ["capacity_congestion"],
+      "expected_output": "Similar records show high user load together with low throughput. Capacity congestion is a plausible hypothesis; review cell capacity and load balancing and monitor throughput against load."
+    },
+    {
+      "id": "low_handover",
+      "query": "Handover success rate is low on several cells.",
+      "expected_conditions": ["low_handover"],
+      "expected_category": "Mobility / Handover",
+      "expected_hypotheses": ["mobility_configuration"],
+      "expected_output": "Similar records show low handover success. A mobility configuration issue (neighbour relations or handover parameters) is the leading hypothesis; analyse per cell-pair handover counters and audit neighbour relations."
+    },
+    {
+      "id": "alarms",
+      "query": "High alarm count and many critical alarms at a site.",
+      "expected_conditions": ["high_alarm_count", "high_critical_alarm_count"],
+      "expected_category": "Fault / Alarm",
+      "expected_hypotheses": ["equipment_fault", "availability_outage"],
+      "expected_output": "Similar records show high alarm and critical alarm counts. An equipment fault indicated by alarms is a plausible hypothesis; prioritise resolving critical alarms and monitor fault occurrence."
+    },
+    {
+      "id": "authentication",
+      "query": "Many authentication failures reported on the network.",
+      "expected_conditions": ["authentication_failure"],
+      "expected_category": "Security",
+      "expected_hypotheses": ["security_authentication"],
+      "expected_output": "Similar records show high authentication failures. A security or authentication anomaly is a plausible hypothesis; escalate to security operations and review failure patterns."
+    },
+    {
+      "id": "setup_success",
+      "query": "Low connection setup success for users trying to connect.",
+      "expected_conditions": ["low_setup_success"],
+      "expected_category": "Access / Connection Setup",
+      "expected_hypotheses": ["access_procedure"],
+      "expected_output": "Similar records show low connection setup success. An access or connection-setup procedure issue is the leading hypothesis; analyse setup failure causes and monitor setup success."
+    },
+    {
+      "id": "fault_rate",
+      "query": "High fault occurrence rate in a network region.",
+      "expected_conditions": ["high_fault_rate"],
+      "expected_category": "Fault / Alarm",
+      "expected_hypotheses": ["equipment_fault", "weather_related"],
+      "expected_output": "Similar records show a high fault occurrence rate. Equipment faults indicated by alarms or weather-related degradation are plausible hypotheses; review alarms and correlate with weather."
+    }
+  ]
+}

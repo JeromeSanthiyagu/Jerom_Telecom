@@ -1,0 +1,75 @@
+# ML model configuration (Phases 19-22).
+
+artifacts_dir: data/processed/models
+reports_dir: docs/models
+test_size: 0.2
+random_state: 42
+
+feature_groups:
+  context_categorical: [season, weather]
+  context_numeric: [temperature_c, humidity_pct]
+  radio_transport: [latency_ms, packet_loss_pct, jitter_ms, signal_strength_dbm, handover_success_pct,
+                    cell_availability_pct, setup_success_pct, user_count, data_usage_gb]
+
+# Columns that can never be model inputs, whatever the target:
+always_excluded:
+  - record_id          # identifier
+  - source_row         # identifier
+  - city               # random high-cardinality location (Phase 1)
+  - state
+  - zip
+  - issue_reported     # no relation to any metric (AUC 0.506, Phase 1)
+  - "cond_*"           # derived conditions
+  - conditions
+  - n_conditions
+  - primary_category   # derived labels
+  - secondary_categories
+  - "severity*"
+  - "priority*"
+  - search_text
+  - embedding_text
+  - "dq_*"
+
+fault_risk:
+  target: fault_rate_pct
+  # Phase 1: target ~= linear formula of these (R^2 0.9992) -> excluded from
+  # the primary and strict models; MTTR is only known after a fault (post-event).
+  excluded_features:
+    fault_rate_pct: target
+    critical_alarm_count: component of the target formula
+    auth_failures: component of the target formula
+    security_incidents: component of the target formula
+    alarm_count: component of the target formula
+    call_drop_pct: component of the target formula
+    config_success_pct: component of the target formula
+    parameter_changes: component of the target formula
+    mttr_hours: post-incident measurement (not available at prediction time)
+  feature_sets:
+    C_primary: [context_categorical, context_numeric, radio_transport, throughput_mbps]
+    D_strict: [context_categorical, context_numeric, radio_transport]
+    A_formula_demo: ALL_EXCEPT_TARGET      # demonstrates the target is formulaic; never served
+  served: C_primary
+  # Risk bands on the PREDICTED fault occurrence rate, from the distribution
+  # of the historical rate (P25 / P75 / P90 of fault_rate_pct).
+  risk_bands:
+    - {level: Low, below: 28.339}
+    - {level: Medium, below: 48.152}
+    - {level: High, below: 55.5134}
+    - {level: Critical, below: null}
+
+performance:
+  target: throughput_mbps
+  excluded_features:
+    throughput_mbps: target
+    critical_alarm_count: mirror of throughput (r = -0.958) - would leak
+    fault_rate_pct: downstream of throughput / alarms
+  feature_sets:
+    primary: [context_categorical, context_numeric, radio_transport]
+  served: primary
+
+incident_classifier:
+  target: primary_category      # DERIVED label (taxonomy.yaml), not human annotation
+  feature_sets:
+    primary: [radio_transport, throughput_mbps, alarm_count, critical_alarm_count, config_success_pct,
+              parameter_changes, security_incidents, auth_failures, fault_rate_pct]
+  served: primary

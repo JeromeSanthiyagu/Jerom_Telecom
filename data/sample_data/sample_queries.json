@@ -1,0 +1,422 @@
+[
+  {
+    "query": "A network region has increasing fault occurrence and declining handover success. What corrective actions should be considered?",
+    "expected_output": {
+      "conditions_recognised": [
+        "high_fault_rate",
+        "low_handover"
+      ],
+      "category": "Mobility / Handover",
+      "secondary_categories": [
+        "Fault / Alarm"
+      ],
+      "severity": "MEDIUM",
+      "priority": "P4 (Low)",
+      "predicted_fault_risk": "44.08% Medium (ML prediction)",
+      "observed_fault_rate_similar_records": "58.05% mean",
+      "primary_hypothesis": "Mobility configuration issue (neighbour relations or handover parameters)",
+      "confidence": 0.65,
+      "alternatives": [
+        "Weather-related service degradation",
+        "Load-related mobility degradation",
+        "Equipment fault indicated by alarms"
+      ],
+      "top_actions": [
+        "Audit neighbour relationships and correct missing or incorrect neighbours",
+        "Compare mobility parameters with the network baseline and roll back deviating recent changes",
+        "Correlate the degradation with weather periods before changing configuration"
+      ],
+      "similar_records": [
+        {
+          "record_id": "ROW-098813",
+          "similarity": 0.9842,
+          "conditions": [
+            "low_handover",
+            "high_fault_rate"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-058468",
+          "similarity": 0.9751,
+          "conditions": [
+            "low_handover",
+            "high_fault_rate"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-069805",
+          "similarity": 0.9658,
+          "conditions": [
+            "low_handover",
+            "high_fault_rate"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-047042",
+          "similarity": 0.9628,
+          "conditions": [
+            "low_handover",
+            "high_fault_rate"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-051245",
+          "similarity": 0.959,
+          "conditions": [
+            "low_handover",
+            "high_fault_rate"
+          ],
+          "weather": "Rain"
+        }
+      ],
+      "validation": {
+        "evidence_grounded": true,
+        "diagnosis_supported": true,
+        "recommendation_relevant": false,
+        "hallucination_detected": false,
+        "method": "deterministic only"
+      }
+    }
+  },
+  {
+    "query": "Cell has high latency and packet loss with good signal strength and normal user load. What similar network conditions occurred before?",
+    "expected_output": {
+      "conditions_recognised": [
+        "high_latency",
+        "high_packet_loss"
+      ],
+      "category": "Service Degradation",
+      "secondary_categories": [],
+      "severity": "MEDIUM",
+      "priority": "P4 (Low)",
+      "predicted_fault_risk": "44.08% Medium (ML prediction)",
+      "observed_fault_rate_similar_records": "46.63% mean",
+      "primary_hypothesis": "Transport or inter-cell connectivity degradation",
+      "confidence": 0.68,
+      "alternatives": [
+        "Weather-related service degradation",
+        "Capacity congestion"
+      ],
+      "top_actions": [
+        "Investigate transport and inter-cell connectivity for the affected sites",
+        "Correct transport faults or capacity bottlenecks found during the investigation",
+        "Correlate the degradation with weather periods before changing configuration"
+      ],
+      "similar_records": [
+        {
+          "record_id": "ROW-036379",
+          "similarity": 0.9573,
+          "conditions": [
+            "low_availability",
+            "high_latency",
+            "high_packet_loss"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-083117",
+          "similarity": 0.957,
+          "conditions": [
+            "low_availability",
+            "high_latency",
+            "high_packet_loss"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-067231",
+          "similarity": 0.9557,
+          "conditions": [
+            "low_availability",
+            "high_latency",
+            "high_packet_loss"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-016873",
+          "similarity": 0.9417,
+          "conditions": [
+            "low_availability",
+            "high_latency",
+            "high_packet_loss"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-052105",
+          "similarity": 0.9293,
+          "conditions": [
+            "low_availability",
+            "low_throughput",
+            "high_latency",
+            "high_packet_loss",
+            "high_jitter",
+            "high_data_usage"
+          ],
+          "weather": "Rain"
+        }
+      ],
+      "validation": {
+        "evidence_grounded": true,
+        "diagnosis_supported": true,
+        "recommendation_relevant": true,
+        "hallucination_detected": false,
+        "method": "deterministic only"
+      }
+    }
+  },
+  {
+    "query": "Poor signal strength and frequent call drops during snow",
+    "expected_output": {
+      "conditions_recognised": [
+        "high_call_drop",
+        "weak_signal"
+      ],
+      "category": "Radio / Signal Quality",
+      "secondary_categories": [
+        "Service Degradation"
+      ],
+      "severity": "MEDIUM",
+      "priority": "P4 (Low)",
+      "predicted_fault_risk": "47.61% Medium (ML prediction)",
+      "observed_fault_rate_similar_records": "46.0% mean",
+      "primary_hypothesis": "Radio coverage or signal-quality degradation",
+      "confidence": 0.72,
+      "alternatives": [
+        "Weather-related service degradation"
+      ],
+      "top_actions": [
+        "Investigate radio quality (coverage, interference, antenna configuration)",
+        "Optimise coverage for weak-signal areas (tilt / power review) after drive-test or measurement evidence",
+        "Correlate the degradation with weather periods before changing configuration"
+      ],
+      "similar_records": [
+        {
+          "record_id": "ROW-040851",
+          "similarity": 0.979,
+          "conditions": [
+            "high_call_drop",
+            "weak_signal"
+          ],
+          "weather": "Snow"
+        },
+        {
+          "record_id": "ROW-000364",
+          "similarity": 0.9786,
+          "conditions": [
+            "high_call_drop",
+            "weak_signal"
+          ],
+          "weather": "Snow"
+        },
+        {
+          "record_id": "ROW-014274",
+          "similarity": 0.9737,
+          "conditions": [
+            "high_call_drop",
+            "weak_signal"
+          ],
+          "weather": "Snow"
+        },
+        {
+          "record_id": "ROW-096493",
+          "similarity": 0.9629,
+          "conditions": [
+            "high_call_drop",
+            "weak_signal"
+          ],
+          "weather": "Snow"
+        },
+        {
+          "record_id": "ROW-026638",
+          "similarity": 0.9612,
+          "conditions": [
+            "high_call_drop",
+            "weak_signal"
+          ],
+          "weather": "Snow"
+        }
+      ],
+      "validation": {
+        "evidence_grounded": true,
+        "diagnosis_supported": true,
+        "recommendation_relevant": true,
+        "hallucination_detected": false,
+        "method": "deterministic only"
+      }
+    }
+  },
+  {
+    "query": "High user load with reduced throughput and rising latency",
+    "expected_output": {
+      "conditions_recognised": [
+        "high_latency",
+        "high_load",
+        "low_throughput"
+      ],
+      "category": "Congestion / Load",
+      "secondary_categories": [
+        "Service Degradation"
+      ],
+      "severity": "MEDIUM",
+      "priority": "P4 (Low)",
+      "predicted_fault_risk": "44.08% Medium (ML prediction)",
+      "observed_fault_rate_similar_records": "49.77% mean",
+      "primary_hypothesis": "Capacity congestion",
+      "confidence": 0.71,
+      "alternatives": [
+        "Transport or inter-cell connectivity degradation",
+        "Weather-related service degradation"
+      ],
+      "top_actions": [
+        "Review capacity of the affected cells (load balancing, carrier/capacity expansion)",
+        "Apply traffic management for persistently congested cells",
+        "Investigate transport and inter-cell connectivity for the affected sites"
+      ],
+      "similar_records": [
+        {
+          "record_id": "ROW-057747",
+          "similarity": 0.972,
+          "conditions": [
+            "low_throughput",
+            "high_latency",
+            "high_load"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-087507",
+          "similarity": 0.9324,
+          "conditions": [
+            "low_throughput",
+            "high_latency",
+            "high_jitter",
+            "high_load"
+          ],
+          "weather": "Clouds"
+        },
+        {
+          "record_id": "ROW-071553",
+          "similarity": 0.9213,
+          "conditions": [
+            "high_latency",
+            "high_load"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-005811",
+          "similarity": 0.9145,
+          "conditions": [
+            "low_throughput",
+            "high_latency",
+            "low_handover",
+            "high_load"
+          ],
+          "weather": "Snow"
+        },
+        {
+          "record_id": "ROW-053995",
+          "similarity": 0.9136,
+          "conditions": [
+            "high_latency",
+            "high_load"
+          ],
+          "weather": "Rain"
+        }
+      ],
+      "validation": {
+        "evidence_grounded": true,
+        "diagnosis_supported": true,
+        "recommendation_relevant": true,
+        "hallucination_detected": false,
+        "method": "deterministic only"
+      }
+    }
+  },
+  {
+    "query": "Many authentication failures and security incidents on a site",
+    "expected_output": {
+      "conditions_recognised": [
+        "authentication_failure",
+        "security_risk"
+      ],
+      "category": "Security",
+      "secondary_categories": [],
+      "severity": "LOW",
+      "priority": "P4 (Low)",
+      "predicted_fault_risk": "44.08% Medium (ML prediction)",
+      "observed_fault_rate_similar_records": "50.61% mean",
+      "primary_hypothesis": "Security or authentication anomaly",
+      "confidence": 0.84,
+      "alternatives": [
+        "Weather-related service degradation",
+        "Access / connection-setup procedure issue"
+      ],
+      "top_actions": [
+        "Escalate to the security operations team for investigation of the incidents",
+        "Review authentication failure patterns and block confirmed malicious sources",
+        "Correlate the degradation with weather periods before changing configuration"
+      ],
+      "similar_records": [
+        {
+          "record_id": "ROW-046479",
+          "similarity": 0.9928,
+          "conditions": [
+            "security_risk",
+            "authentication_failure"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-007551",
+          "similarity": 0.9879,
+          "conditions": [
+            "security_risk",
+            "authentication_failure"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-051463",
+          "similarity": 0.9879,
+          "conditions": [
+            "security_risk",
+            "authentication_failure"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-010593",
+          "similarity": 0.984,
+          "conditions": [
+            "security_risk",
+            "authentication_failure"
+          ],
+          "weather": "Rain"
+        },
+        {
+          "record_id": "ROW-088625",
+          "similarity": 0.9826,
+          "conditions": [
+            "security_risk",
+            "authentication_failure"
+          ],
+          "weather": "Rain"
+        }
+      ],
+      "validation": {
+        "evidence_grounded": true,
+        "diagnosis_supported": true,
+        "recommendation_relevant": false,
+        "hallucination_detected": false,
+        "method": "deterministic only"
+      }
+    }
+  }
+]

@@ -1,0 +1,226 @@
+# Raw-dataset schema and cleaning rules (Phase 2).
+#
+# Every raw column is listed exactly as it appears in the CSV header, with the
+# canonical snake_case name used everywhere else in the project.
+#
+#   type:   float | int | category | bool | text | zip
+#   range:  physically/logically valid [min, max]; values outside become
+#           missing (never clipped, never imputed). null = unbounded side.
+#   role:   kpi | operational | load | security | environment | context |
+#           location | target | flag
+#   allowed: canonical values for categorical columns.
+#
+# Ranges are VALIDITY limits, not "normal" limits: valid extreme telecom
+# measurements are always kept. Thresholds for "high/low" live in a separate
+# file (Phase 3).
+
+dataset:
+  name: fenar/5g_netops
+  revision: 75f94e94097eb72efcd95ef417d4be171ac31bb6
+  expected_rows: 100000
+  record_id_prefix: "ROW-"
+  record_id_width: 6
+
+columns:
+  - raw: "Season"
+    name: season
+    type: category
+    role: context
+    allowed: [Winter, Spring, Summer, Fall]
+    aliases: {autumn: Fall}
+
+  - raw: "Cell Availability (%)"
+    name: cell_availability_pct
+    type: float
+    unit: "%"
+    role: kpi
+    range: [0, 100]
+
+  - raw: "MTTR (hours)"
+    name: mttr_hours
+    type: float
+    unit: hours
+    role: operational
+    range: [0, null]
+
+  - raw: "Throughput (Mbps)"
+    name: throughput_mbps
+    type: float
+    unit: Mbps
+    role: kpi
+    range: [0, null]
+
+  - raw: "Latency (ms)"
+    name: latency_ms
+    type: float
+    unit: ms
+    role: kpi
+    range: [0, null]
+
+  - raw: "Packet Loss Rate (%)"
+    name: packet_loss_pct
+    type: float
+    unit: "%"
+    role: kpi
+    range: [0, 100]
+
+  - raw: "Call Drop Rate (%)"
+    name: call_drop_pct
+    type: float
+    unit: "%"
+    role: kpi
+    range: [0, 100]
+
+  - raw: "Handover Success Rate (%)"
+    name: handover_success_pct
+    type: float
+    unit: "%"
+    role: kpi
+    range: [0, 100]
+
+  - raw: "Alarm Count"
+    name: alarm_count
+    type: int
+    role: operational
+    range: [0, null]
+
+  # Non-integer in 98.6% of rows (Phase 1) - kept as float, treated as an index.
+  - raw: "Critical Alarm Count"
+    name: critical_alarm_count
+    type: float
+    role: operational
+    range: [0, null]
+
+  - raw: "Parameter Changes"
+    name: parameter_changes
+    type: int
+    role: operational
+    range: [0, null]
+
+  - raw: "Successful Configuration Changes (%)"
+    name: config_success_pct
+    type: float
+    unit: "%"
+    role: operational
+    range: [0, 100]
+
+  - raw: "Data Usage (GB)"
+    name: data_usage_gb
+    type: float
+    unit: GB
+    role: load
+    range: [0, null]
+
+  - raw: "User Count"
+    name: user_count
+    type: int
+    role: load
+    range: [0, null]
+
+  # LTE/NR RSRP reporting range is -140..-44 dBm.
+  - raw: "Signal Strength (dBm)"
+    name: signal_strength_dbm
+    type: float
+    unit: dBm
+    role: kpi
+    range: [-140, -44]
+
+  - raw: "Jitter (ms)"
+    name: jitter_ms
+    type: float
+    unit: ms
+    role: kpi
+    range: [0, null]
+
+  - raw: "Connection Setup Success Rate (%)"
+    name: setup_success_pct
+    type: float
+    unit: "%"
+    role: kpi
+    range: [0, 100]
+
+  - raw: "Security Incidents"
+    name: security_incidents
+    type: int
+    role: security
+    range: [0, null]
+
+  - raw: "Authentication Failures"
+    name: auth_failures
+    type: int
+    role: security
+    range: [0, null]
+
+  # Surface air temperature; wider than any recorded extreme on purpose.
+  - raw: "Temperature (°C)"
+    name: temperature_c
+    type: float
+    unit: "°C"
+    role: environment
+    range: [-60, 60]
+
+  - raw: "Humidity (%)"
+    name: humidity_pct
+    type: float
+    unit: "%"
+    role: environment
+    range: [0, 100]
+
+  - raw: "Weather"
+    name: weather
+    type: category
+    role: environment
+    allowed: [Clear, Clouds, Rain, Snow]
+    aliases: {cloudy: Clouds, cloud: Clouds, rainy: Rain, snowy: Snow, sunny: Clear}
+
+  - raw: "Issue Reported"
+    name: issue_reported
+    type: bool
+    role: flag
+    true_values: ["yes", "y", "true", "1"]
+    false_values: ["no", "n", "false", "0"]
+
+  - raw: "City"
+    name: city
+    type: text
+    role: location
+
+  - raw: "State"
+    name: state
+    type: category
+    role: location
+    case: upper
+
+  - raw: "Zip"
+    name: zip
+    type: zip
+    role: location
+
+  - raw: "Fault Occurrence Rate (%)"
+    name: fault_rate_pct
+    type: float
+    unit: "%"
+    role: target
+    range: [0, 100]
+
+# Columns that must be present for a row to be kept. A row with ALL of these
+# missing carries no network evidence and is dropped (logged).
+evidence_columns:
+  - cell_availability_pct
+  - throughput_mbps
+  - latency_ms
+  - packet_loss_pct
+  - call_drop_pct
+  - handover_success_pct
+  - signal_strength_dbm
+  - jitter_ms
+  - setup_success_pct
+  - fault_rate_pct
+
+# Data-quality flags added as boolean dq_* columns. They annotate; they never
+# change or remove a value.
+quality_flags:
+  dq_critical_exceeds_total_alarms: "critical_alarm_count > alarm_count"
+  dq_availability_at_cap: "cell_availability_pct == 99.0"
+  dq_setup_success_at_cap: "setup_success_pct == 99.0"
+  dq_data_usage_at_floor: "data_usage_gb == 10.0"

@@ -1,0 +1,218 @@
+# Derived network-condition thresholds (Phase 3).
+#
+# A condition is TRUE when the metric is strictly beyond `threshold` in the
+# adverse direction (operator "<" or ">"; ">=" only for coarse integer
+# columns where ">" would flag far fewer than 10% of rows).
+#
+# method:
+#   percentile - worst-decile cut (P10 for "low is bad", P90 for "high is bad"),
+#                computed ONCE on the full processed dataset (100,000 rows) and
+#                stored here. Chosen because Phase 1 showed most columns are
+#                uniform over narrow ranges, so operator rules of thumb flag
+#                80-88% of rows (see domain_reference / domain_share).
+#   domain     - an established engineering boundary that is also selective
+#                on this data.
+#
+# extreme: the P99 (or P01) value, i.e. the point where the indicator counts
+#          as maximally bad in the severity score (Phase 5).
+#
+# `python -m src.preprocessing.build_thresholds --check` recomputes every percentile value
+# from the data and fails if this file has drifted.
+
+source:
+  dataset: data/processed/records.parquet
+  rows: 100000
+
+conditions:
+  low_availability:
+    metric: cell_availability_pct
+    label: Low cell availability
+    operator: "<"
+    method: percentile
+    percentile: 10
+    threshold: 79.4339
+    extreme: 76.823
+    domain_reference: {operator: "<", value: 99.0, share_flagged: 0.8813}
+    group: availability
+
+  low_throughput:
+    metric: throughput_mbps
+    label: Low throughput
+    operator: "<"
+    method: percentile
+    percentile: 10
+    threshold: 304.2482
+    extreme: 211.6124
+    group: service
+
+  high_latency:
+    metric: latency_ms
+    label: High latency
+    operator: ">"
+    method: percentile
+    percentile: 90
+    threshold: 129.9218
+    extreme: 159.599
+    domain_reference: {operator: ">", value: 100.0, share_flagged: 0.2962}
+    group: service
+
+  high_packet_loss:
+    metric: packet_loss_pct
+    label: High packet loss
+    operator: ">"
+    method: percentile
+    percentile: 90
+    threshold: 11.88
+    extreme: 14.88
+    domain_reference: {operator: ">", value: 2.0, share_flagged: 0.8466}
+    group: service
+
+  high_call_drop:
+    metric: call_drop_pct
+    label: High call drop rate
+    operator: ">"
+    method: percentile
+    percentile: 90
+    threshold: 3.1338
+    extreme: 4.9843
+    domain_reference: {operator: ">", value: 2.0, share_flagged: 0.2075}
+    group: radio
+
+  low_handover:
+    metric: handover_success_pct
+    label: Low handover success
+    operator: "<"
+    method: percentile
+    percentile: 10
+    threshold: 91.01
+    extreme: 90.1
+    domain_reference: {operator: "<", value: 98.0, share_flagged: 0.7976}
+    group: mobility
+
+  weak_signal:
+    metric: signal_strength_dbm
+    label: Weak signal strength
+    operator: "<"
+    method: domain
+    threshold: -110.0
+    extreme: -119.41
+    rationale: >-
+      RSRP below -110 dBm is a widely used poor-coverage / cell-edge boundary
+      and flags 16.7% of rows here (P10 would be -114.04 dBm).
+    group: radio
+
+  high_jitter:
+    metric: jitter_ms
+    label: High jitter
+    operator: ">"
+    method: percentile
+    percentile: 90
+    threshold: 44.98
+    extreme: 49.51
+    domain_reference: {operator: ">", value: 30.0, share_flagged: 0.4}
+    group: service
+
+  low_setup_success:
+    metric: setup_success_pct
+    label: Low connection setup success
+    operator: "<"
+    method: percentile
+    percentile: 10
+    threshold: 90.99
+    extreme: 90.11
+    domain_reference: {operator: "<", value: 98.0, share_flagged: 0.8014}
+    group: access
+
+  high_load:
+    metric: user_count
+    label: High user load
+    operator: ">"
+    method: percentile
+    percentile: 90
+    threshold: 9002.1
+    extreme: 9902.0
+    group: load
+
+  high_data_usage:
+    metric: data_usage_gb
+    label: High data usage
+    operator: ">"
+    method: percentile
+    percentile: 90
+    threshold: 45.07
+    extreme: 49.54
+    group: load
+
+  high_alarm_count:
+    metric: alarm_count
+    label: High alarm count
+    operator: ">"
+    method: percentile
+    percentile: 90
+    threshold: 14.0
+    extreme: 18.0
+    group: fault
+
+  high_critical_alarm_count:
+    metric: critical_alarm_count
+    label: High critical alarm count
+    operator: ">"
+    method: percentile
+    percentile: 90
+    threshold: 9.5652
+    extreme: 11.0783
+    group: fault
+
+  low_config_success:
+    metric: config_success_pct
+    label: Low configuration change success
+    operator: "<"
+    method: percentile
+    percentile: 10
+    threshold: 90.89
+    extreme: 90.09
+    group: configuration
+
+  high_parameter_changes:
+    metric: parameter_changes
+    label: Many parameter changes
+    operator: ">="
+    method: percentile
+    percentile: 90
+    threshold: 18.0
+    extreme: 19.0
+    rationale: Integer 0-19; ">= 18" flags 10.2% of rows, "> 18" only 5%.
+    group: configuration
+
+  security_risk:
+    metric: security_incidents
+    label: Elevated security incidents
+    operator: ">="
+    method: percentile
+    percentile: 90
+    threshold: 18.0
+    extreme: 19.0
+    rationale: Integer 1-19; ">= 18" flags 10.4% of rows, "> 18" only 5.1%.
+    group: security
+
+  authentication_failure:
+    metric: auth_failures
+    label: High authentication failures
+    operator: ">"
+    method: percentile
+    percentile: 90
+    threshold: 35.0
+    extreme: 56.0
+    group: security
+
+  # Historical fault occurrence. Used for display, category and severity only.
+  # NEVER a model input: it is the fault-risk prediction target (Phase 20).
+  high_fault_rate:
+    metric: fault_rate_pct
+    label: High fault occurrence rate
+    operator: ">"
+    method: percentile
+    percentile: 90
+    threshold: 55.5134
+    extreme: 67.3525
+    group: fault

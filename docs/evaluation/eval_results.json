@@ -1,0 +1,154 @@
+{
+  "summary": {
+    "condition_recall": 1.0,
+    "retrieval_precision": 1.0,
+    "average_precision": 1.0,
+    "category_match": 1.0,
+    "hypothesis_hit": 1.0,
+    "grounded": 1.0
+  },
+  "cases": [
+    {
+      "id": "latency_packet_loss",
+      "query": "Cell has high latency and high packet loss. What similar network conditions occurred before?",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Service Degradation",
+      "top_hypotheses": [
+        "transport_connectivity",
+        "weather_related",
+        "capacity_congestion"
+      ],
+      "narrative_source": "template",
+      "seconds": 72.2
+    },
+    {
+      "id": "signal_call_drops",
+      "query": "Poor signal strength and frequent call drops on a cell.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Radio / Signal Quality",
+      "top_hypotheses": [
+        "radio_quality",
+        "weather_related"
+      ],
+      "narrative_source": "template",
+      "seconds": 0.4
+    },
+    {
+      "id": "load_throughput",
+      "query": "High user load with reduced throughput on the cell.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Congestion / Load",
+      "top_hypotheses": [
+        "capacity_congestion",
+        "weather_related",
+        "transport_connectivity"
+      ],
+      "narrative_source": "template",
+      "seconds": 0.3
+    },
+    {
+      "id": "low_handover",
+      "query": "Handover success rate is low on several cells.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Mobility / Handover",
+      "top_hypotheses": [
+        "mobility_configuration",
+        "load_mobility",
+        "radio_quality"
+      ],
+      "narrative_source": "template",
+      "seconds": 0.3
+    },
+    {
+      "id": "alarms",
+      "query": "High alarm count and many critical alarms at a site.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Fault / Alarm",
+      "top_hypotheses": [
+        "equipment_fault",
+        "availability_outage"
+      ],
+      "narrative_source": "template",
+      "seconds": 0.4
+    },
+    {
+      "id": "authentication",
+      "query": "Many authentication failures reported on the network.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Security",
+      "top_hypotheses": [
+        "security_authentication",
+        "weather_related",
+        "access_procedure"
+      ],
+      "narrative_source": "template",
+      "seconds": 0.3
+    },
+    {
+      "id": "setup_success",
+      "query": "Low connection setup success for users trying to connect.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Access / Connection Setup",
+      "top_hypotheses": [
+        "access_procedure",
+        "radio_quality"
+      ],
+      "narrative_source": "template",
+      "seconds": 0.5
+    },
+    {
+      "id": "fault_rate",
+      "query": "High fault occurrence rate in a network region.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Fault / Alarm",
+      "top_hypotheses": [
+        "weather_related",
+        "equipment_fault"
+      ],
+      "narrative_source": "template",
+      "seconds": 0.3
+    }
+  ],
+  "use_llm": false,
+  "deepeval": false
+}

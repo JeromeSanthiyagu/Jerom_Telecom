@@ -1,0 +1,35 @@
+# Theme for the Streamlit front end (frontend.py): neutral surfaces, one blue accent,
+# status colours reserved for state. Light and dark follow the viewer's system setting.
+[theme]
+font = "IBM Plex Sans:https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap, sans-serif"
+codeFont = "IBM Plex Mono:https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap, monospace"
+baseRadius = "6px"
+buttonRadius = "6px"
+headingFontWeights = [600, 600, 600, 600, 600, 600]
+headingFontSizes = ["1.75rem", "1.5rem", "1.25rem", "1.0625rem", "0.9375rem", "0.875rem"]
+showWidgetBorder = true
+
+[theme.light]
+primaryColor = "#1a5ca8"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f3f4f6"
+textColor = "#17202b"
+borderColor = "#d9dde3"
+linkColor = "#1a5ca8"
+
+[theme.dark]
+primaryColor = "#6ea6ea"
+backgroundColor = "#11161c"
+secondaryBackgroundColor = "#1a212a"
+textColor = "#e5e9ee"
+borderColor = "#2b3542"
+linkColor = "#8db9ef"
+
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "viewer"

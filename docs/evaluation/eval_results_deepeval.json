@@ -1,0 +1,352 @@
+{
+  "summary": {
+    "condition_recall": 1.0,
+    "retrieval_precision": 1.0,
+    "average_precision": 1.0,
+    "category_match": 1.0,
+    "hypothesis_hit": 1.0,
+    "grounded": 0.75,
+    "deepeval": {
+      "AnswerRelevancyMetric": 0.888,
+      "ContextualPrecisionMetric": 1.0,
+      "ContextualRelevancyMetric": 0.279,
+      "FaithfulnessMetric": 0.933
+    },
+    "deepeval_scored": {
+      "AnswerRelevancyMetric": "8/8",
+      "ContextualPrecisionMetric": "8/8",
+      "ContextualRelevancyMetric": "8/8",
+      "FaithfulnessMetric": "6/8"
+    }
+  },
+  "cases": [
+    {
+      "id": "latency_packet_loss",
+      "query": "Cell has high latency and high packet loss. What similar network conditions occurred before?",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Service Degradation",
+      "top_hypotheses": [
+        "transport_connectivity",
+        "weather_related",
+        "capacity_congestion"
+      ],
+      "narrative_source": "llm",
+      "seconds": 81.6,
+      "answer": "The cell is experiencing high latency and high packet loss, matching five recent Service Degradation records that all occurred during rain in summer or fall.  All five records show low availability (\u224877\u202f%) and fault rates around 44\u202f%, with the dataset\u2019s baseline indicating a 47.89\u202f% fault rate for rain.  The most likely drivers are weather\u2011related degradation and transport connectivity issues, while capacity congestion is less supported by the evidence.\nHigh latency and packet loss are present in the operator\u2019s stated conditions and in all retrieved records.  The records share identical weather (Rain) and season (Summer/Fall) and exhibit similar metrics: latency \u2248156\u202fms, packet loss \u224813\u202f%, call drop \u22481.3\u202f%, handover success \u224892\u202f%, throughput \u2248511\u202fMbps, and fault rate \u224844\u202f%.  The dataset baseline shows a median latency of 77\u202fms and packet loss of 6\u202f%, confirming the degradation.\nRecommended actions: Investigate transport and inter-cell connectivity for the affected sites; Correct transport faults or capacity bottlenecks found during the investigation; Correlate the degradation with weather periods before changing configuration; Review weather resilience of exposed links and sites; Review capacity of the affected cells (load balancing, carrier/capacity expansion); Apply traffic management for persistently congested cells",
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 0.588,
+          "reason": "The score is 0.59 because the response focuses on diagnosing and recommending actions for current congestion, corrective steps, and future reviews, rather than listing prior similar latency or packet loss events as requested.",
+          "attempts": 1
+        },
+        "FaithfulnessMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context, indicating perfect faithfulness.",
+          "attempts": 1
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.419,
+          "reason": "The score is 0.42 because the retrieval context contains several statements that directly mention high latency and high packet loss, such as 'Cell has high latency and high packet loss.' and 'Derived conditions: low cell availability (low_availability), high latency (high_latency), high packet loss (high_packet_loss).', but many other unrelated data points dilute relevance, leading to a moderate score.",
+          "attempts": 1
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all nodes (1 through 5) are relevant, and there are no irrelevant nodes to rank lower. Each node\u2019s reason explicitly cites \"high latency (high_latency), high packet loss (high_packet_loss)\" in its derived conditions, confirming the similarity to the input. Since every node is relevant, the contextual precision is perfect.",
+          "attempts": 1
+        }
+      }
+    },
+    {
+      "id": "signal_call_drops",
+      "query": "Poor signal strength and frequent call drops on a cell.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Radio / Signal Quality",
+      "top_hypotheses": [
+        "radio_quality",
+        "weather_related"
+      ],
+      "narrative_source": "template",
+      "seconds": 37.6,
+      "answer": "For the case described in the query - observed conditions: high_call_drop, weak_signal; derived category Radio / Signal Quality, case severity MEDIUM (stated conditions (estimated)), priority P4; predicted fault occurrence risk Medium (44.08%). 5 similar historical records were retrieved (their own stored severities are listed separately).\nLeading hypothesis: Radio coverage or signal-quality degradation (heuristic confidence 0.72). Alternatives: Weather-related service degradation.\nRecommended actions: Investigate radio quality (coverage, interference, antenna configuration); Optimise coverage for weak-signal areas (tilt / power review) after drive-test or measurement evidence; Correlate the degradation with weather periods before changing configuration; Review weather resilience of exposed links and sites",
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because the response directly addressed the issue of poor signal strength and frequent call drops, providing relevant troubleshooting steps without any irrelevant content.",
+          "attempts": 1
+        },
+        "FaithfulnessMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context.",
+          "attempts": 1
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.276,
+          "reason": "The score is 0.28 because the retrieval context contains several statements that directly mention \"low cell availability\", \"high call drop rate\", and \"weak signal strength\" (e.g., \"Derived conditions: low cell availability (low_availability), high call drop rate (high_call_drop), weak signal strength (weak_signal).\" and network metrics with signal strength values like \"-118.13 dBm\"), which are relevant to the user\u2019s issue of poor signal and call drops. However, many other statements in the context are unrelated (e.g., weather, security incidents, load metrics), diluting the relevance and resulting in a moderate score.",
+          "attempts": 1
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all relevant nodes (nodes 1 through 5) are ranked above any irrelevant nodes, ensuring perfect contextual precision.",
+          "attempts": 1
+        }
+      }
+    },
+    {
+      "id": "load_throughput",
+      "query": "High user load with reduced throughput on the cell.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Congestion / Load",
+      "top_hypotheses": [
+        "capacity_congestion",
+        "weather_related",
+        "transport_connectivity"
+      ],
+      "narrative_source": "llm",
+      "seconds": 16.0,
+      "answer": "All five records show high user load and low throughput with a mix of high latency, jitter, and packet loss, all occurring during rain or snow. The dataset indicates that weather is a strong driver of these metrics, while capacity limits and transport links remain plausible contributors. Monitoring should focus on weather\u2011linked performance trends, cell load, and back\u2011haul health to confirm the root cause.\nThe deterministic analysis confirms a congestion / load problem with a low severity classification, but the fault risk remains medium due to high historical fault rates.\nRecommended actions: Review capacity of the affected cells (load balancing, carrier/capacity expansion); Apply traffic management for persistently congested cells; Correlate the degradation with weather periods before changing configuration; Review weather resilience of exposed links and sites; Investigate transport and inter-cell connectivity for the affected sites; Correct transport faults or capacity bottlenecks found during the investigation",
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 0.917,
+          "reason": "The score is 0.92 because the answer includes an irrelevant statement about fault risk assessment, which does not address the high user load and reduced throughput issue, slightly lowering overall relevance.",
+          "attempts": 1
+        },
+        "FaithfulnessMetric": {
+          "score": 0.6,
+          "reason": "The score is 0.60 because the actual output incorrectly labels all five records as having low throughput, while the records actually show values between 268 and 298\u202fMbps, which are not low. Additionally, it claims the deterministic analysis confirms a congestion problem with low severity, yet the records classify the severity as high or medium. These contradictions lower the faithfulness of the output.",
+          "attempts": 1
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.373,
+          "reason": "The score is 0.37 because the relevant statements such as 'Derived conditions: low cell availability (low_availability), low throughput (low_throughput), high latency (high_latency), high user load (high_load)' directly address the issue, while the irrelevant statements repeatedly mention unrelated details like location, weather, or security incidents.",
+          "attempts": 1
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all relevant nodes (nodes 1 through 5) are ranked above any irrelevant nodes, as each node\u2019s reason explicitly states \"high user load\" and \"low throughput\" in its derived conditions, matching the input.",
+          "attempts": 1
+        }
+      }
+    },
+    {
+      "id": "low_handover",
+      "query": "Handover success rate is low on several cells.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Mobility / Handover",
+      "top_hypotheses": [
+        "mobility_configuration",
+        "load_mobility",
+        "radio_quality"
+      ],
+      "narrative_source": "llm",
+      "seconds": 9.6,
+      "answer": "The five high\u2011severity records all show low handover success (\u224890\u202f%) alongside high call\u2011drop and low availability, with weather predominantly rain and a mean fault rate of 44.33\u202f%. The dataset confirms a consistent pattern of low handover across all records, but does not provide evidence of load, radio, or transport issues. Monitoring neighbour\u2011relation integrity and recent mobility parameter changes is recommended, as the mobility configuration hypothesis has the highest confidence (0.65).\nThe operator has reported low handover; all retrieved records contain the condition 'low_handover' and show handover success percentages between 90.03\u202f% and 90.75\u202f%. The mean handover success across the records is 90.32\u202f%, below the dataset baseline of 95.02\u202f%. All records also exhibit high fault rates (mean 44.33\u202f%) and low availability (mean 81.25\u202f%).\nRecommended actions: Audit neighbour relationships and correct missing or incorrect neighbours; Compare mobility parameters with the network baseline and roll back deviating recent changes; Review load-balancing between neighbouring cells; Consider capacity relief (traffic offload or additional capacity) for persistently loaded cells; Investigate radio quality (coverage, interference, antenna configuration); Optimise coverage for weak-signal areas (tilt / power review) after drive-test or measurement evidence",
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because the response directly addresses the issue of low handover success rate on several cells without including any irrelevant statements.",
+          "attempts": 1
+        },
+        "FaithfulnessMetric": {
+          "score": null,
+          "reason": "error: Evaluation LLM outputted an invalid JSON. Please use a better evaluation model.",
+          "attempts": 3
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.158,
+          "reason": "The score is 0.16 because the retrieval context contains only a few statements that directly mention handover success, such as \"Handover success rate is low on several cells.\" and the derived condition list, while the majority of the context is irrelevant, as highlighted by the irrelevancy reasons that quote unrelated metrics and locations.",
+          "attempts": 1
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all nodes in the retrieval contexts are relevant, and there are no irrelevant nodes to rank lower. Each node (first through fifth) contains the phrase \"Derived conditions: low handover success (low_handover)\" and a handover success percentage, directly supporting the input.",
+          "attempts": 1
+        }
+      }
+    },
+    {
+      "id": "alarms",
+      "query": "High alarm count and many critical alarms at a site.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": false,
+      "category": "Fault / Alarm",
+      "top_hypotheses": [
+        "equipment_fault",
+        "availability_outage"
+      ],
+      "narrative_source": "template",
+      "seconds": 46.3,
+      "answer": "For the case described in the query - observed conditions: high_alarm_count, high_critical_alarm_count; derived category Fault / Alarm, case severity LOW (stated conditions (estimated)), priority P4; predicted fault occurrence risk Medium (44.08%). 5 similar historical records were retrieved (their own stored severities are listed separately).\nLeading hypothesis: Equipment fault indicated by alarms (heuristic confidence 0.74). Alternatives: Cell or site availability problem (hardware, power or software).\nRecommended actions: Prioritise resolution of critical alarms at the affected sites; Investigate recurring alarm types to find the failing component; Resolve active critical alarms at the affected sites; Investigate recurring outages (hardware, power supply, software stability)",
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because the response fully addressed the input without any irrelevant statements.",
+          "attempts": 1
+        },
+        "FaithfulnessMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because there are no contradictions to indicate any misalignment between the actual output and the retrieval context.",
+          "attempts": 1
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.302,
+          "reason": "The score is 0.30 because the retrieval context contains many unrelated metrics such as \"throughput 361.16 Mbps\" and \"temperature 13.71 \u00b0C\", yet it does include the relevant statements \"High alarm count (high_alarm_count) and high critical alarm count (high_critical_alarm_count) at the site.\" and \"Operational metrics: alarm count 23; critical alarm count 11.28\" that directly address the alarm counts.",
+          "attempts": 1
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all relevant nodes (nodes 1 through 5) are ranked above any irrelevant nodes, as indicated by the quoted reasons that each node explicitly mentions \"high alarm count\" and \"high critical alarm count\" and labels the issue as a fault.",
+          "attempts": 1
+        }
+      }
+    },
+    {
+      "id": "authentication",
+      "query": "Many authentication failures reported on the network.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": false,
+      "category": "Security",
+      "top_hypotheses": [
+        "security_authentication",
+        "weather_related",
+        "access_procedure"
+      ],
+      "narrative_source": "template",
+      "seconds": 26.5,
+      "answer": "For the case described in the query - observed conditions: authentication_failure; derived category Security, case severity LOW (stated conditions (estimated)), priority P4; predicted fault occurrence risk Medium (44.08%). 5 similar historical records were retrieved (their own stored severities are listed separately).\nLeading hypothesis: Security or authentication anomaly (heuristic confidence 0.65). Alternatives: Weather-related service degradation, Access / connection-setup procedure issue.\nRecommended actions: Escalate to the security operations team for investigation of the incidents; Review authentication failure patterns and block confirmed malicious sources; Correlate the degradation with weather periods before changing configuration; Review weather resilience of exposed links and sites; Analyse setup failure causes and address the dominant cause; Check admission-control settings and signalling capacity for the affected cells",
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 0.6,
+          "reason": "The score is 0.60 because the response included several irrelevant statements about weather, connection setup, and resilience reviews that do not address the reported authentication failures, limiting the overall relevance.",
+          "attempts": 1
+        },
+        "FaithfulnessMetric": {
+          "score": null,
+          "reason": "error: Evaluation LLM outputted an invalid JSON. Please use a better evaluation model.",
+          "attempts": 3
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.159,
+          "reason": "The score is 0.16 because, while most of the context lists unrelated details such as \"Network record ROW-060041\" or \"Derived severity: LOW (score 5.9)\", only a few statements actually mention authentication failures, e.g., \"Derived conditions: high authentication failures (authentication_failure)\" and \"Security: security incidents 15; authentication failures 45\". The limited overlap explains the low relevancy.",
+          "attempts": 1
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all relevant nodes (nodes 1 through 5) are ranked above any irrelevant nodes, as indicated by the quoted reasons: \"Derived conditions: high authentication failures (authentication_failure)\" and the consistent listing of 45 authentication failures. Since no irrelevant nodes appear before the relevant ones, the contextual precision reaches its maximum.",
+          "attempts": 1
+        }
+      }
+    },
+    {
+      "id": "setup_success",
+      "query": "Low connection setup success for users trying to connect.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Access / Connection Setup",
+      "top_hypotheses": [
+        "access_procedure",
+        "radio_quality"
+      ],
+      "narrative_source": "llm",
+      "seconds": 19.5,
+      "answer": "The operator reports low connection\u2011setup success, and all five retrieved records confirm this condition with a mean setup success of 90.75\u202f%\u2014below the dataset median of 94.96\u202f%. The historical fault\u2011rate for these records is 33.72\u202f%, placing the risk in the medium band, while the ML model predicts a 44.08\u202f% fault risk but notes low input coverage. The top hypothesis (access_procedure) has 0.68 confidence and is supported by 100\u202f% of the records; the secondary hypothesis (radio_quality) has 0.26 confidence and is not supported by the retrieved data.\nThe evidence points to a procedural issue in the access/connection\u2011setup process rather than radio\u2011quality degradation. Monitor setup\u2011failure logs, admission\u2011control metrics, and signalling capacity for the affected cells. If further anomalies appear, re\u2011evaluate radio\u2011coverage through drive\u2011tests or measurement campaigns.\nRecommended actions: Analyse setup failure causes and address the dominant cause; Check admission-control settings and signalling capacity for the affected cells; Investigate radio quality (coverage, interference, antenna configuration); Optimise coverage for weak-signal areas (tilt / power review) after drive-test or measurement evidence",
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because the response fully addresses the issue of low connection setup success for users, with no irrelevant statements present.",
+          "attempts": 1
+        },
+        "FaithfulnessMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because there are no contradictions between the actual output and the retrieval context.",
+          "attempts": 2
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.303,
+          "reason": "The score is 0.30 because the retrieval context contains many unrelated details (e.g., 'Network record ROW-005655', 'Location: Claytonmouth, OR', 'Weather: Clouds') that do not address the issue, while only a few statements directly mention the problem, such as 'Low connection setup success for users trying to connect.' and 'Network metrics: connection setup success 90.68%'. The limited relevance of these few statements results in a low contextual relevancy score.",
+          "attempts": 1
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all nodes in the retrieval contexts are relevant, and there are no irrelevant nodes to rank lower. Each node (rank 1 through 5) contains the exact phrase \"Derived conditions: low connection setup success (low_setup_success)\" and supporting metrics, so the relevant nodes are perfectly ranked at the top.",
+          "attempts": 1
+        }
+      }
+    },
+    {
+      "id": "fault_rate",
+      "query": "High fault occurrence rate in a network region.",
+      "condition_recall": 1.0,
+      "retrieval_precision": 1.0,
+      "average_precision": 1.0,
+      "category_match": true,
+      "hypothesis_hit": true,
+      "grounded": true,
+      "category": "Fault / Alarm",
+      "top_hypotheses": [
+        "weather_related",
+        "equipment_fault"
+      ],
+      "narrative_source": "llm",
+      "seconds": 14.6,
+      "answer": "All five retrieved records exhibit high fault rates (56.14\u201360.86\u202f%) alongside high latency, packet loss or jitter, all during rain in summer or fall, and the historical baseline shows a 47.89\u202f% fault rate for rain. The weather\u2011related hypothesis is supported by 100\u202f% of the records matching the weather condition, while the equipment\u2011fault hypothesis lacks supporting evidence in this dataset. Monitor rain\u2011period performance and critical alarms to confirm or refute the weather\u2011driven degradation. \nThe operator has reported a high fault rate. The dataset confirms high fault rates in all five records, with a mean of 58.4\u202f%. The historical baseline for rain is 47.89\u202f%, indicating a significant deviation. \nRecommended actions: Correlate the degradation with weather periods before changing configuration; Review weather resilience of exposed links and sites; Prioritise resolution of critical alarms at the affected sites; Investigate recurring alarm types to find the failing component",
+      "deepeval": {
+        "AnswerRelevancyMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because the response fully addresses the issue of a high fault occurrence rate in a network region without including any irrelevant statements.",
+          "attempts": 1
+        },
+        "FaithfulnessMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because there are no contradictions, indicating perfect faithfulness.",
+          "attempts": 3
+        },
+        "ContextualRelevancyMetric": {
+          "score": 0.242,
+          "reason": "The score is 0.24 because, while the context contains many irrelevant statements about weather, load, and security, it also includes several relevant lines such as 'Derived conditions: high latency (high_latency), high fault occurrence rate (high_fault_rate)' and 'Historical fault occurrence rate: 60.86%'. The presence of these few relevant pieces amid a large amount of unrelated data results in a low overall relevancy.",
+          "attempts": 1
+        },
+        "ContextualPrecisionMetric": {
+          "score": 1.0,
+          "reason": "The score is 1.00 because all relevant nodes (nodes 1 through 5) are ranked above any irrelevant nodes, as indicated by the quoted reasons in each node\u2019s \u2018reason\u2019 field, ensuring perfect contextual precision.",
+          "attempts": 1
+        }
+      }
+    }
+  ],
+  "use_llm": true,
+  "deepeval": true,
+  "judge": "nvidia openai/gpt-oss-20b",
+  "llm": "nvidia openai/gpt-oss-20b"
+}

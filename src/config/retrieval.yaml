@@ -1,0 +1,33 @@
+# Retrieval configuration (Phases 9-13).
+
+embedding:
+  model: sentence-transformers/all-MiniLM-L6-v2   # 384-dim, cached locally
+  batch_size: 128
+
+vector_store:
+  backend: chroma
+  path: data/processed/chroma          # relative to project root
+  collection: network_records
+  distance: cosine                     # similarity = 1 - cosine distance
+  add_batch_size: 5000
+
+bm25:
+  path: data/processed/bm25
+  k1: 1.5
+  b: 0.75
+
+hybrid:
+  # How many candidates each method contributes before exact re-scoring.
+  candidate_pool: 300
+  # Score weights. Scores are min-max normalised over the candidate set before
+  # combining. `metric` is only used when the query states metric values or
+  # qualitative conditions (Phase 13); the active weights are re-normalised
+  # to sum to 1.
+  weights:
+    semantic: 0.6
+    keyword: 0.4
+    metric: 0.6
+  # Subtracted from the hybrid score for each record condition that the user
+  # explicitly described as good/normal ("good signal strength" -> weak_signal).
+  contradiction_penalty: 0.15
+  max_top_k: 50

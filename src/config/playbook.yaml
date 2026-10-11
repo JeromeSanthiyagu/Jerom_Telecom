@@ -1,0 +1,243 @@
+# Root-cause hypotheses and corrective actions (Phases 17-18).
+#
+# Every hypothesis is an ENGINEERING HYPOTHESIS, never a confirmed cause. The
+# dataset has no transport counters, neighbour lists, per-cell-pair handover
+# statistics, configuration diffs or signalling traces, so those can only
+# appear as things to CHECK, never as findings.
+#
+# Fields
+#   triggers_any        the hypothesis is considered if any of these is present
+#   key_evidence        conditions that most directly support it (weights)
+#   supporting          further supporting conditions (weights)
+#   contradicted_if_present / contradicted_if_absent
+#                       evidence against it (absent = user says the metric is
+#                       fine, or a supplied value is within threshold)
+#   context_key         optional context that counts as key evidence
+#   checks              what the engineer should look at
+#   actions             corrective actions to consider
+#   additional_evidence data not in this dataset that would confirm/refute it
+#
+# Confidence (heuristic score, NOT a calibrated probability):
+#   0.20                                   triggered
+# + 0.45 * matched evidence weight / total evidence weight
+# + 0.25 * share of retrieved similar records that show any key evidence
+# - 0.25 per contradicting item
+#   clipped to [0.05, 0.95]
+
+confidence:
+  base: 0.20
+  evidence_weight: 0.45
+  historical_weight: 0.25
+  contradiction_penalty: 0.25
+  min: 0.05
+  max: 0.95
+  report_min: 0.25        # hypotheses below this are listed as "considered, weak"
+  max_hypotheses: 6
+
+hypotheses:
+  - id: mobility_configuration
+    title: Mobility configuration issue (neighbour relations or handover parameters)
+    triggers_any: [low_handover]
+    key_evidence: {low_handover: 1.0}
+    supporting: {high_call_drop: 0.4, high_parameter_changes: 0.4, low_config_success: 0.4}
+    contradicted_if_present: []
+    contradicted_if_absent: [low_handover]
+    checks:
+      - Handover attempts, successes and failures per source-target cell pair
+      - Neighbour relation lists of the affected cells (missing or unwanted neighbours)
+      - Mobility parameters of the affected cells compared with the network baseline
+      - Recent parameter or configuration changes on the affected cells
+    actions:
+      - Audit neighbour relationships and correct missing or incorrect neighbours
+      - Compare mobility parameters with the network baseline and roll back deviating recent changes
+      - Monitor handover success after remediation and compare it with the baseline
+    additional_evidence:
+      - Per cell-pair handover counters (attempts / successes / failure causes)
+      - Neighbour relation tables
+      - Configuration change history for the affected cells
+      - Signalling and access KPIs for the affected cells (e.g. connection setup success)
+
+  - id: load_mobility
+    title: Load-related mobility degradation
+    triggers_any: [low_handover]
+    key_evidence: {high_load: 0.8, high_data_usage: 0.6}
+    supporting: {low_handover: 0.6, high_latency: 0.3, low_throughput: 0.3}
+    contradicted_if_present: [weak_signal]
+    contradicted_if_absent: [high_load]
+    checks:
+      - User count and traffic volume on the source and target cells during the degradation
+      - Whether target cells were near capacity when handovers failed
+      - Load-balancing behaviour between neighbouring cells
+    actions:
+      - Review load-balancing between neighbouring cells
+      - Consider capacity relief (traffic offload or additional capacity) for persistently loaded cells
+      - Monitor handover success and cell load together after any change
+    additional_evidence:
+      - Per-cell load (PRB / resource utilisation) over time
+      - Handover failure causes indicating target-cell admission problems
+
+  - id: radio_quality
+    title: Radio coverage or signal-quality degradation
+    triggers_any: [weak_signal, high_call_drop, low_handover, low_setup_success]
+    key_evidence: {weak_signal: 1.0}
+    supporting: {high_call_drop: 0.4, low_handover: 0.3, low_setup_success: 0.3, low_throughput: 0.3}
+    contradicted_if_present: []
+    contradicted_if_absent: [weak_signal]
+    checks:
+      - Signal strength and quality distribution in the affected area
+      - Coverage holes or overshooting cells near the affected area
+      - Antenna tilt / azimuth and recent physical changes at the site
+      - Interference indicators
+    actions:
+      - Investigate radio quality (coverage, interference, antenna configuration)
+      - Optimise coverage for weak-signal areas (tilt / power review) after drive-test or measurement evidence
+      - Monitor signal strength and call drops after changes and compare with the baseline
+    additional_evidence:
+      - Signal quality / interference measurements (e.g. SINR) - not in this dataset
+      - Drive-test or measurement-report data for the affected area
+
+  - id: transport_connectivity
+    title: Transport or inter-cell connectivity degradation
+    triggers_any: [high_latency, high_packet_loss, high_jitter, low_handover, low_throughput]
+    key_evidence: {high_latency: 0.7, high_packet_loss: 0.8, high_jitter: 0.5}
+    supporting: {low_throughput: 0.4, low_handover: 0.3, high_call_drop: 0.3}
+    contradicted_if_present: []
+    contradicted_if_absent: [high_latency, high_packet_loss]
+    note: The dataset contains no transport/backhaul counters, so this cannot be confirmed from the data.
+    checks:
+      - Transport / backhaul latency, loss and utilisation for the affected sites
+      - Connectivity between neighbouring sites used for handover signalling
+      - Packet loss and jitter trends end-to-end vs. on the radio interface
+    actions:
+      - Investigate transport and inter-cell connectivity for the affected sites
+      - Correct transport faults or capacity bottlenecks found during the investigation
+      - Monitor latency, packet loss and jitter after remediation and compare with the baseline
+    additional_evidence:
+      - Transport-network KPIs (link latency, loss, utilisation, interface errors)
+      - Inter-site connectivity status
+
+  - id: capacity_congestion
+    title: Capacity congestion
+    triggers_any: [high_load, high_data_usage, high_latency, high_packet_loss, low_throughput]
+    key_evidence: {high_load: 0.8, high_data_usage: 0.8}
+    supporting: {high_latency: 0.4, high_packet_loss: 0.4, low_throughput: 0.5}
+    contradicted_if_present: []
+    contradicted_if_absent: [high_load, high_data_usage]
+    checks:
+      - Busy-hour user count and traffic per cell
+      - Resource utilisation and scheduling statistics
+      - Whether throughput degradation coincides with peak load
+    actions:
+      - Review capacity of the affected cells (load balancing, carrier/capacity expansion)
+      - Apply traffic management for persistently congested cells
+      - Monitor throughput and latency against load after changes
+    additional_evidence:
+      - Resource utilisation (PRB usage) and busy-hour statistics
+
+  - id: access_procedure
+    title: Access / connection-setup procedure issue
+    triggers_any: [low_setup_success, authentication_failure]
+    key_evidence: {low_setup_success: 1.0}
+    supporting: {authentication_failure: 0.4, high_call_drop: 0.3, weak_signal: 0.3}
+    contradicted_if_present: []
+    contradicted_if_absent: [low_setup_success]
+    checks:
+      - Connection setup failure causes for the affected cells
+      - Admission-control and signalling-load indicators
+      - Authentication failure trends in the same period
+    actions:
+      - Analyse setup failure causes and address the dominant cause
+      - Check admission-control settings and signalling capacity for the affected cells
+      - Monitor connection setup success after remediation and compare with the baseline
+    additional_evidence:
+      - Setup failure cause codes and signalling statistics - not in this dataset
+
+  - id: security_authentication
+    title: Security or authentication anomaly
+    triggers_any: [security_risk, authentication_failure]
+    key_evidence: {security_risk: 1.0, authentication_failure: 1.0}
+    supporting: {low_setup_success: 0.3}
+    contradicted_if_present: []
+    contradicted_if_absent: [security_risk, authentication_failure]
+    checks:
+      - Authentication failure sources and patterns (time, subscriber groups, cells)
+      - Security incident records for the affected sites
+      - Subscriber / credential provisioning issues
+    actions:
+      - Escalate to the security operations team for investigation of the incidents
+      - Review authentication failure patterns and block confirmed malicious sources
+      - Monitor authentication failures and security incidents after action
+    additional_evidence:
+      - Authentication logs and security event details
+
+  - id: configuration_change
+    title: Impact of recent configuration changes
+    triggers_any: [low_config_success, high_parameter_changes]
+    key_evidence: {low_config_success: 1.0, high_parameter_changes: 0.8}
+    supporting: {low_handover: 0.3, high_call_drop: 0.3}
+    contradicted_if_present: []
+    contradicted_if_absent: [low_config_success, high_parameter_changes]
+    checks:
+      - Change log for the affected cells and the timing relative to the degradation
+      - Failed or partially applied configuration changes
+    actions:
+      - Review recent parameter changes and roll back changes correlated with the degradation
+      - Re-apply or fix failed configuration changes
+      - Monitor the affected KPIs after rollback or correction
+    additional_evidence:
+      - Configuration change history with timestamps
+
+  - id: availability_outage
+    title: Cell or site availability problem (hardware, power or software)
+    triggers_any: [low_availability, high_critical_alarm_count]
+    key_evidence: {low_availability: 1.0}
+    supporting: {high_critical_alarm_count: 0.5, high_alarm_count: 0.4, high_fault_rate: 0.3}
+    contradicted_if_present: []
+    contradicted_if_absent: [low_availability]
+    checks:
+      - Outage periods and their alarms for the affected cells
+      - Hardware, power and software alarms at the site
+    actions:
+      - Resolve active critical alarms at the affected sites
+      - Investigate recurring outages (hardware, power supply, software stability)
+      - Monitor cell availability after remediation and compare with the baseline
+    additional_evidence:
+      - Alarm details (type, severity, timestamps) and outage logs
+
+  - id: equipment_fault
+    title: Equipment fault indicated by alarms
+    triggers_any: [high_critical_alarm_count, high_alarm_count, high_fault_rate]
+    key_evidence: {high_critical_alarm_count: 1.0, high_alarm_count: 0.6}
+    supporting: {high_fault_rate: 0.5, low_availability: 0.4}
+    contradicted_if_present: []
+    contradicted_if_absent: [high_critical_alarm_count, high_alarm_count]
+    checks:
+      - Active and historical alarms at the affected sites (type and frequency)
+      - Fault occurrence trend for the affected cells
+    actions:
+      - Prioritise resolution of critical alarms at the affected sites
+      - Investigate recurring alarm types to find the failing component
+      - Monitor fault occurrence and alarm counts after remediation
+    additional_evidence:
+      - Alarm type breakdown and timestamps
+
+  - id: weather_related
+    title: Weather-related service degradation
+    triggers_any: [high_latency, high_packet_loss, low_throughput, high_call_drop, authentication_failure, high_fault_rate]
+    key_evidence: {}
+    context_key: {weather: [Rain, Snow]}
+    supporting: {high_latency: 0.3, high_packet_loss: 0.3, low_throughput: 0.3, high_call_drop: 0.3}
+    contradicted_if_present: []
+    contradicted_if_absent: []
+    note: >-
+      In this dataset weather is the strongest driver of throughput, latency,
+      packet loss, call drops and fault occurrence (see historical evidence).
+    checks:
+      - Whether the degradation coincides with rain or snow periods
+      - Weather exposure of the affected links and sites
+    actions:
+      - Correlate the degradation with weather periods before changing configuration
+      - Review weather resilience of exposed links and sites
+      - Monitor KPIs across weather conditions and compare with clear-weather baselines
+    additional_evidence:
+      - Time-aligned weather data for the affected sites

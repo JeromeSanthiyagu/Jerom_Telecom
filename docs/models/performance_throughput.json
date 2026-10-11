@@ -1,0 +1,93 @@
+{
+  "target": "throughput_mbps",
+  "features": [
+    "season",
+    "weather",
+    "temperature_c",
+    "humidity_pct",
+    "latency_ms",
+    "packet_loss_pct",
+    "jitter_ms",
+    "signal_strength_dbm",
+    "handover_success_pct",
+    "cell_availability_pct",
+    "setup_success_pct",
+    "user_count",
+    "data_usage_gb"
+  ],
+  "excluded_features": {
+    "throughput_mbps": "target",
+    "critical_alarm_count": "mirror of throughput (r = -0.958) - would leak",
+    "fault_rate_pct": "downstream of throughput / alarms"
+  },
+  "models": {
+    "linear_regression": {
+      "mae": 161.544,
+      "rmse": 196.1094,
+      "r2": 0.3309
+    },
+    "random_forest": {
+      "mae": 162.1145,
+      "rmse": 197.0877,
+      "r2": 0.3242
+    },
+    "hist_gradient_boosting": {
+      "mae": 161.8357,
+      "rmse": 196.4929,
+      "r2": 0.3283
+    }
+  },
+  "mean_predictor_baseline": {
+    "mae": 197.2848,
+    "rmse": 239.7441,
+    "r2": -0.0
+  },
+  "served": {
+    "target": "throughput_mbps",
+    "raw_features": [
+      "season",
+      "weather",
+      "temperature_c",
+      "humidity_pct",
+      "latency_ms",
+      "packet_loss_pct",
+      "jitter_ms",
+      "signal_strength_dbm",
+      "handover_success_pct",
+      "cell_availability_pct",
+      "setup_success_pct",
+      "user_count",
+      "data_usage_gb"
+    ],
+    "encoded_features": [
+      "season_Winter",
+      "season_Spring",
+      "season_Summer",
+      "season_Fall",
+      "weather_Clear",
+      "weather_Clouds",
+      "weather_Rain",
+      "weather_Snow",
+      "temperature_c",
+      "humidity_pct",
+      "latency_ms",
+      "packet_loss_pct",
+      "jitter_ms",
+      "signal_strength_dbm",
+      "handover_success_pct",
+      "cell_availability_pct",
+      "setup_success_pct",
+      "user_count",
+      "data_usage_gb"
+    ],
+    "algorithm": "HistGradientBoostingRegressor",
+    "test_metrics": {
+      "mae": 161.8357,
+      "rmse": 196.4929,
+      "r2": 0.3283
+    },
+    "residual_p10": -259.2683628719553,
+    "residual_p90": 262.8380782331637
+  },
+  "interpretation": "Moderate explanatory power, driven mainly by weather; treat predictions as indicative ranges, not precise forecasts."
+}

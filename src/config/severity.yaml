@@ -1,0 +1,56 @@
+# Derived severity (Phase 5).
+#
+#   badness_i = 0                                   if condition i is not active
+#             = 0.5 + 0.5 * position_i              if active
+#   position_i = how far the value is from the condition threshold towards the
+#                P99/P01 "extreme" in thresholds.yaml, clipped to [0, 1].
+#
+#   severity_score = min(100, sum_i points_i * badness_i + issue_reported_points)
+#
+# Crossing a threshold earns half the indicator's points; reaching the
+# dataset's 1% extreme earns all of them. Points express engineering
+# importance (service-affecting > operational context).
+#
+# Fault rate vs its components: Phase 1 found fault_rate_pct ~ linear in
+# critical alarms + auth failures + security incidents. To avoid counting the
+# same signal twice at full weight, those components get reduced points.
+#
+# user_count / data_usage are NOT in severity: they measure impact, which is
+# handled by priority (priority.yaml).
+
+points:
+  low_availability: 30
+  high_call_drop: 22
+  low_setup_success: 20
+  high_fault_rate: 20
+  high_critical_alarm_count: 15
+  high_latency: 15
+  high_packet_loss: 15
+  low_throughput: 15
+  low_handover: 15
+  weak_signal: 12
+  high_jitter: 10
+  authentication_failure: 8
+  security_risk: 8
+  high_alarm_count: 8
+  low_config_success: 6
+  high_parameter_changes: 4
+
+issue_reported_points: 5
+
+# Score cut-offs (lower bound inclusive). Calibrated on the score distribution
+# so that LOW covers normal / single minor issues and CRITICAL is rare.
+levels:
+  - {name: CRITICAL, min_score: 55}
+  - {name: HIGH, min_score: 35}
+  - {name: MEDIUM, min_score: 15}
+  - {name: LOW, min_score: 0}
+
+# Overrides keep extreme single problems from being diluted.
+overrides:
+  # any indicator at/beyond its extreme with at least this many points -> >= HIGH
+  extreme_single_min_points: 15
+  extreme_single_level: HIGH
+  # this many indicators at/beyond their extreme -> CRITICAL
+  extreme_multi_count: 2
+  extreme_multi_level: CRITICAL

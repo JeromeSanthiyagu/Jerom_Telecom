@@ -1,0 +1,65 @@
+# Derived incident taxonomy (Phase 4).
+#
+# Categories are DERIVED from the Phase 3 conditions by transparent rules -
+# they are not ground-truth labels and no LLM is involved.
+#
+# Rule: each category has condition weights. A record's score for a category
+# is the sum of the weights of its active conditions. A category is only
+# eligible if at least one of its `requires_any` conditions is active.
+# primary_category = highest score; ties are broken by list order (earlier
+# wins). Other categories with a positive score are secondary categories.
+# A record with no active condition is "Normal".
+#
+# Why scoring instead of "A AND B -> category" rules: Phase 1 showed most
+# condition pairs co-occur only at chance level (lift ~1.0), so AND-rules such
+# as weak_signal + high_call_drop would leave categories almost empty.
+
+normal_category: Normal
+fallback_category: Other
+
+categories:
+  - name: Availability
+    requires_any: [low_availability]
+    weights: {low_availability: 1.5, high_critical_alarm_count: 0.3}
+
+  - name: Congestion / Load
+    requires_any: [high_load, high_data_usage]
+    weights:
+      high_load: 1.0
+      high_data_usage: 0.8
+      high_latency: 0.5
+      high_packet_loss: 0.5
+      low_throughput: 0.5
+
+  - name: Mobility / Handover
+    requires_any: [low_handover]
+    weights: {low_handover: 1.2, high_call_drop: 0.4}
+
+  - name: Radio / Signal Quality
+    requires_any: [weak_signal]
+    weights: {weak_signal: 1.0, high_call_drop: 0.4, low_setup_success: 0.2}
+
+  - name: Access / Connection Setup
+    requires_any: [low_setup_success]
+    weights: {low_setup_success: 1.1, authentication_failure: 0.2}
+
+  - name: Service Degradation
+    requires_any: [high_latency, high_packet_loss, high_jitter, low_throughput, high_call_drop]
+    weights:
+      high_latency: 1.0
+      high_packet_loss: 1.0
+      high_jitter: 0.8
+      low_throughput: 1.0
+      high_call_drop: 0.6
+
+  - name: Fault / Alarm
+    requires_any: [high_critical_alarm_count, high_alarm_count, high_fault_rate]
+    weights: {high_critical_alarm_count: 1.0, high_alarm_count: 0.7, high_fault_rate: 1.0}
+
+  - name: Security
+    requires_any: [security_risk, authentication_failure]
+    weights: {security_risk: 1.0, authentication_failure: 1.0}
+
+  - name: Configuration
+    requires_any: [low_config_success, high_parameter_changes]
+    weights: {low_config_success: 1.0, high_parameter_changes: 0.7}

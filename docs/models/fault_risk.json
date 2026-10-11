@@ -1,0 +1,200 @@
+{
+  "target": "fault_rate_pct",
+  "task": "regression",
+  "rows_train": 80000,
+  "rows_test": 20000,
+  "feature_sets": {
+    "C_primary": {
+      "raw_features": [
+        "season",
+        "weather",
+        "temperature_c",
+        "humidity_pct",
+        "latency_ms",
+        "packet_loss_pct",
+        "jitter_ms",
+        "signal_strength_dbm",
+        "handover_success_pct",
+        "cell_availability_pct",
+        "setup_success_pct",
+        "user_count",
+        "data_usage_gb",
+        "throughput_mbps"
+      ],
+      "n_encoded": 20,
+      "models": {
+        "linear_regression": {
+          "mae": 3.727,
+          "rmse": 4.7685,
+          "r2": 0.8848
+        },
+        "hist_gradient_boosting": {
+          "mae": 3.7249,
+          "rmse": 4.7669,
+          "r2": 0.8849
+        },
+        "random_forest": {
+          "mae": 3.749,
+          "rmse": 4.8053,
+          "r2": 0.8831
+        }
+      }
+    },
+    "D_strict": {
+      "raw_features": [
+        "season",
+        "weather",
+        "temperature_c",
+        "humidity_pct",
+        "latency_ms",
+        "packet_loss_pct",
+        "jitter_ms",
+        "signal_strength_dbm",
+        "handover_success_pct",
+        "cell_availability_pct",
+        "setup_success_pct",
+        "user_count",
+        "data_usage_gb"
+      ],
+      "n_encoded": 19,
+      "models": {
+        "linear_regression": {
+          "mae": 8.3792,
+          "rmse": 10.1336,
+          "r2": 0.48
+        },
+        "hist_gradient_boosting": {
+          "mae": 8.3874,
+          "rmse": 10.1496,
+          "r2": 0.4783
+        },
+        "random_forest": {
+          "mae": 8.416,
+          "rmse": 10.197,
+          "r2": 0.4734
+        }
+      }
+    },
+    "A_formula_demo": {
+      "raw_features": [
+        "season",
+        "cell_availability_pct",
+        "mttr_hours",
+        "throughput_mbps",
+        "latency_ms",
+        "packet_loss_pct",
+        "call_drop_pct",
+        "handover_success_pct",
+        "alarm_count",
+        "critical_alarm_count",
+        "parameter_changes",
+        "config_success_pct",
+        "data_usage_gb",
+        "user_count",
+        "signal_strength_dbm",
+        "jitter_ms",
+        "setup_success_pct",
+        "security_incidents",
+        "auth_failures",
+        "temperature_c",
+        "humidity_pct",
+        "weather"
+      ],
+      "n_encoded": 28,
+      "models": {
+        "linear_regression": {
+          "mae": 0.086,
+          "rmse": 0.2051,
+          "r2": 0.9998
+        },
+        "hist_gradient_boosting": {
+          "mae": 0.1872,
+          "rmse": 0.2581,
+          "r2": 0.9997
+        }
+      }
+    }
+  },
+  "excluded_features": {
+    "fault_rate_pct": "target",
+    "critical_alarm_count": "component of the target formula",
+    "auth_failures": "component of the target formula",
+    "security_incidents": "component of the target formula",
+    "alarm_count": "component of the target formula",
+    "call_drop_pct": "component of the target formula",
+    "config_success_pct": "component of the target formula",
+    "parameter_changes": "component of the target formula",
+    "mttr_hours": "post-incident measurement (not available at prediction time)"
+  },
+  "served": {
+    "raw_features": [
+      "season",
+      "weather",
+      "temperature_c",
+      "humidity_pct",
+      "latency_ms",
+      "packet_loss_pct",
+      "jitter_ms",
+      "signal_strength_dbm",
+      "handover_success_pct",
+      "cell_availability_pct",
+      "setup_success_pct",
+      "user_count",
+      "data_usage_gb",
+      "throughput_mbps"
+    ],
+    "encoded_features": [
+      "season_Winter",
+      "season_Spring",
+      "season_Summer",
+      "season_Fall",
+      "weather_Clear",
+      "weather_Clouds",
+      "weather_Rain",
+      "weather_Snow",
+      "temperature_c",
+      "humidity_pct",
+      "latency_ms",
+      "packet_loss_pct",
+      "jitter_ms",
+      "signal_strength_dbm",
+      "handover_success_pct",
+      "cell_availability_pct",
+      "setup_success_pct",
+      "user_count",
+      "data_usage_gb",
+      "throughput_mbps"
+    ],
+    "residual_p10": -5.914749170780899,
+    "residual_p90": 5.925250292613916,
+    "test_metrics": {
+      "mae": 3.7249,
+      "rmse": 4.7669,
+      "r2": 0.8849
+    },
+    "cv_r2_mean": 0.8848,
+    "cv_r2_std": 0.0006,
+    "feature_set": "C_primary",
+    "algorithm": "HistGradientBoostingRegressor",
+    "risk_bands": [
+      {
+        "level": "Low",
+        "below": 28.339
+      },
+      {
+        "level": "Medium",
+        "below": 48.152
+      },
+      {
+        "level": "High",
+        "below": 55.5134
+      },
+      {
+        "level": "Critical",
+        "below": null
+      }
+    ],
+    "target": "fault_rate_pct"
+  },
+  "note": "Served model: HistGradientBoosting on the primary feature set. It handles missing inputs natively, which matters because queries rarely state every KPI."
+}

@@ -1,0 +1,42 @@
+# Raw and generated data (re-create with `python -m src.preprocessing.build_all`).
+# data/sample_data/ IS committed.
+data/raw/
+data/processed/
+data/feedback/
+*.part
+
+# Secrets - never commit API keys
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.log
+
+# Web UI (optional React app)
+web/node_modules/
+web/dist/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Generated figure caches
+docs/tech_primer/figs/
+
+# Local tool settings
+.claude/
+
+
+
+# Office lock files and pending replacements
+~$*
+*.new.pptx
